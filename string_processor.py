@@ -1,6 +1,6 @@
 # import 
 import pandas as pd
-from datetime import date
+from datetime import date, datetime
 
 #Reading scrapped raw data
 raw_data = pd.read_excel(open('./data.xlsx', 'rb'), sheet_name='Sheet1')
@@ -73,120 +73,73 @@ def post_date(text):
 
 
 
-# Validation Process
-for i in range(len(titles)):
-    artist = text_split(titles[i], '-')[0]
-    if artist:
-        processed_data['Artist'].append(artist)
-        processed_data['Duration'].append(duration(meta[i]))
-        processed_data['Views'].append(view(views[i]))
-        processed_data['Channel'].append(channels[i])
-        processed_data['Title'].append(titles[i])
-        processed_data['Likes'].append(like(likes[i]))
-        processed_data['Post Date'].append(post_date(posted_date[i]))
-        processed_data['Collection Date'].append(date(2022, 1, 6))
-    else:
-        rejected_data['Artist'].append(artist)
-        rejected_data['Duration'].append(duration(meta[i]))
-        rejected_data['Views'].append(view(views[i]))
-        rejected_data['Channel'].append(channels[i])
-        rejected_data['Title'].append(titles[i])
-        rejected_data['Likes'].append(like(likes[i]))
-        rejected_data['Post Date'].append(post_date(posted_date[i]))
-        rejected_data['Collection Date'].append(date(2022, 1, 6))
+# # Validation Process
+# for i in range(len(titles)):
+#     artist = text_split(titles[i], '-')[0]
+#     if artist:
+#         processed_data['Artist'].append(artist)
+#         processed_data['Duration'].append(duration(meta[i]))
+#         processed_data['Views'].append(view(views[i]))
+#         processed_data['Channel'].append(channels[i])
+#         processed_data['Title'].append(titles[i])
+#         processed_data['Likes'].append(like(likes[i]))
+#         processed_data['Post Date'].append(post_date(posted_date[i]))
+#         processed_data['Collection Date'].append(date(2022, 1, 6))
+#     else:
+#         rejected_data['Artist'].append(artist)
+#         rejected_data['Duration'].append(duration(meta[i]))
+#         rejected_data['Views'].append(view(views[i]))
+#         rejected_data['Channel'].append(channels[i])
+#         rejected_data['Title'].append(titles[i])
+#         rejected_data['Likes'].append(like(likes[i]))
+#         rejected_data['Post Date'].append(post_date(posted_date[i]))
+#         rejected_data['Collection Date'].append(date(2022, 1, 6))
 
-# converting validated data to dataframe
-processed_df = pd.DataFrame.from_dict(processed_data)
-rejected__df = pd.DataFrame.from_dict(rejected_data)
+# # converting validated data to dataframe
+# processed_df = pd.DataFrame.from_dict(processed_data)
+# rejected__df = pd.DataFrame.from_dict(rejected_data)
 
-# Saving Dataframe to Excel
-processed_df.to_excel("./Test_processed.xlsx", sheet_name='data')
-rejected__df.to_excel("./Test_rejected.xlsx", sheet_name='data')
-
-
-# def spliter(raw_data, split_text):
-
-    
-#     artists = []
-#     titles = []
-#     posted = []
-#     duration = []
-#     views = []
-
-#     index_counter = 0
-#     rejected_rows  = {''[]}
-
-#     for pt_title in title_list[:15]:
-#         dash_pos  = pt_title.find('-')
-#         pt_title_list = pt_title.split('-')
-#         split_count = len(pt_title_list)
-
-#         title = pt_title
-
-#         if (dash_pos > 3 and split_count == 2):
-#             artist = pt_title_list[0]
-
-#     for pt_title in title_list[:15]:
-#         dash_pos  = pt_title.find('-')
-#         pt_title_list = pt_title.split('-')
-#         split_count = len(pt_title_list)            
-#         if split_count == 2:
-#             meta_text = meta_text_list[1]
-#             meta_text_list = meta_text.split('ago')
-#             posted_on = meta_text_list[0] + 'ago'
-
-#             meta_text = meta_text_list[1]
-
-#             if len(meta_text.split('seconds')) == 2:
-#                 meta_text_list = meta_text.split('seconds')
-#                 length = meta_text_list[0] + 'seconds'
-#             elif len(meta_text.split('second')) == 2:
-#                 meta_text_list = meta_text.split('second')
-#                 length = meta_text_list[0] + 'second'
-#             elif  len(meta_text.split('minutes')) == 2:
-#                 meta_text_list = meta_text.split('minutes')
-#                 length = meta_text_list[0] + 'minutes'
-#             else:
-#                 rejected_rows.append(index_counter)
-#             meta_text_list = meta_text_list[1].split('views')
-#             meta_text = meta_text_list[0].replace(',', '')
-#             view_count = meta_text.replace(" ", '')
-#             view_count = int(view_count)
-
-#                 artists.append(artist)
-#                 titles.append(title)
-#                 posted.append(posted_on)
-#                 duration.append(length)
-#                 views.append(view_count)
-
-#         else:
-#             rejected_rows.append(video_index[index_counter])
-
-#         index_counter = index_counter + 1
-
-#     rejected_data = raw_data.iloc[rejected_rows]
-#     data = {"Artist": artists, "Title": titles, "Posted_as_of_Nov_03": posted, "Length": duration, "Views_as_of_Nov_03": views}
-#     processed_data = pd.DataFrame.from_dict(data)
-#     return processed_data, rejected_data
-
-# # data = spliter(raw_data=raw_data, split_text='Hope Music Ethiopia')
-
-# # data[0].to_excel("./processed_Data/Test_processed.xlsx", sheet_name='Hope_Entertainment Detail')  
-# # data[1].to_excel("./processed_Data/Test_rejected.xlsx", sheet_name='Hope_Entertainment Detail')  
+# # Saving Dataframe to Excel
+# processed_df.to_excel("./Test_processed.xlsx", sheet_name='data')
+# rejected__df.to_excel("./Test_rejected.xlsx", sheet_name='data')
 
 
+processed_data = pd.read_excel(open('./Test_processed.xlsx', 'rb'), sheet_name='data')
+processed_data['Post Date']= pd.to_datetime(processed_data['Post Date'])
+print(processed_data.nunique())
+df_2012 = processed_data.loc[((processed_data['Post Date']>=datetime(2012, 1, 1)) & (processed_data['Post Date']<=datetime(2012, 12, 31)))]
+df_2013 = processed_data.loc[((processed_data['Post Date']>=datetime(2013, 1, 1)) & (processed_data['Post Date']<=datetime(2013, 12, 31)))]
+df_2014 = processed_data.loc[((processed_data['Post Date']>=datetime(2014, 1, 1)) & (processed_data['Post Date']<=datetime(2014, 12, 31)))]
+df_2015 = processed_data.loc[((processed_data['Post Date']>=datetime(2015, 1, 1)) & (processed_data['Post Date']<=datetime(2015, 12, 31)))]
+df_2016 = processed_data.loc[((processed_data['Post Date']>=datetime(2016, 1, 1)) & (processed_data['Post Date']<=datetime(2016, 12, 31)))]
+df_2017 = processed_data.loc[((processed_data['Post Date']>=datetime(2017, 1, 1)) & (processed_data['Post Date']<=datetime(2017, 12, 31)))]
+df_2018 = processed_data.loc[((processed_data['Post Date']>=datetime(2018, 1, 1)) & (processed_data['Post Date']<=datetime(2018, 12, 31)))]
+df_2019 = processed_data.loc[((processed_data['Post Date']>=datetime(2019, 1, 1)) & (processed_data['Post Date']<=datetime(2019, 12, 31)))]
+df_2020 = processed_data.loc[((processed_data['Post Date']>=datetime(2020, 1, 1)) & (processed_data['Post Date']<=datetime(2020, 12, 31)))]
+df_2021 = processed_data.loc[((processed_data['Post Date']>=datetime(2021, 1, 1)) & (processed_data['Post Date']<=datetime(2021, 12, 31)))]
+df_2022 = processed_data.loc[((processed_data['Post Date']>=datetime(2022, 1, 1)) & (processed_data['Post Date']<=datetime(2022, 12, 31)))]
 
-# titles = data['Title'].values
+yearly_data = [df_2012, df_2013, df_2014, df_2015, df_2016, df_2017, df_2018, df_2019, df_2020, df_2021, df_2022]
 
-# for title in titles[:15]:
-#     dash_pos  = title.find('-')
-#     title_texts = title.split(' - ')
-#     if dash_pos > 3:
-#         if title_texts[0] == "Ethiopia":
-#             artist = title_texts[1]
-#             music_title = title_texts[1]
-#         else:
-#             artist = title_texts[0]
-#             music_title = title_texts[1]
-#         dic = {'artist':artist, 'title':music_title}
-#         print(dic)
+def unique_value(df):
+     artist_list = df.Artist.unique()
+    #  artist_no = df.Artist.nunique()
+     artists = pd.DataFrame({'Artists': artist_list})
+     return artists
+
+artist_count = []
+for df in yearly_data:
+    df_values = len(unique_value(df).values)
+    df_vals = len(df.values)
+    artist_count.append(df_values)
+    artist_count.append(df_vals)
+
+print(artist_count)
+
+
+view_counts = {"Post Date": ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'], 
+               "Views": [df_2012['Views'].sum(), df_2013['Views'].sum(), df_2014['Views'].sum(), df_2015['Views'].sum(), df_2016['Views'].sum(), 
+                         df_2017['Views'].sum(), df_2018['Views'].sum(), df_2019['Views'].sum(), df_2020['Views'].sum(), df_2021['Views'].sum(),
+                         df_2022['Views'].sum(),]}
+                       
+print(unique_value(df_2017))

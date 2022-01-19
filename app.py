@@ -8,7 +8,15 @@ import plotly.express as px
 
 def unique_value(df):
      artist_list = df.Artist.unique()
-     artists = pd.DataFrame({'Artists': artist_list})
+     view_count = []
+     counts = []
+     for artist in artist_list:
+          filtered_df = df.loc[(df['Artist']==artist)]
+          count = len(filtered_df['Artist'].values)
+          _count = filtered_df["Views"].sum()
+          view_count.append(_count)
+          counts.append(count)
+     artists = pd.DataFrame({'Artists': artist_list, "Views": view_count, "Freq.": counts})
      return artists
 
 
@@ -46,28 +54,35 @@ all_df = pd.DataFrame(view_counts)
 data_dic = {"2012": df_2012, "2013": df_2013, "2014": df_2014, "2015": df_2015, "2016": df_2016, "2017": df_2017,
             "2018": df_2018, "2019": df_2019, "2020": df_2020,  "2021": df_2021, "2022": df_2022,}
 
-
-
 chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['a', 'b', 'c'])
 
 # Ploty figers to be served
 fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
 # fig.write_html('first_figure.html', auto_open=True)
 
-
-
-
 ## UI 
 
 c1 = st.container()
-c1.title('Ethiopian Music ON YouTube')
-c1.dataframe(processed_data)
+c1.title('Ethiopian Music on Youtube')
+c1.subheader("""
+In this section, 
+Ethiopian musics hosted by different channels, mostly 
+proffessional recording lables and online streaming channels, are used to build artists information, 
+mainly artist's name, total views(on YouTube) and their debut data will be collected. From this we will 
+build artists full information from other platforms""")
 
-c1.header("Artists hosted per year")
-year = c1.selectbox('Which Years data do you want to review',
-                     ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='artist')
-search_data = data_dic[year]
-c1.dataframe(unique_value(search_data))
+col1, col2 = c1.columns(2)
+with col1:
+     c2 = st.container()
+     c2.header("Artists hosted per year")
+     year = c2.selectbox('Which Years data do you want to review',
+                         ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='artist')
+     c2.subheader("For Year: {1}, Total Count of Posts: {0} Unique Artist Count {2}".format(len(data_dic[year].values), year, len(unique_value(data_dic[year])['Artists'].values)))
+     c2.dataframe(unique_value(data_dic[year]))
+with col2:
+     
+     channels_fig = px.pie(data_dic[year], values='Views', names='Channel', title='Total Number of posts catagorized by the channel that hosted the Videos')
+     st.plotly_chart(channels_fig, use_container_width=False)
 
 container = st.container()
 container.header("Period vs the number of views per channel")
@@ -86,24 +101,3 @@ with col3:
 with col4:
      with container.expander("See Data"):
           st.dataframe(data_dic[option])
-
-col5, col6 = st.columns(2)
-
-with col5:
-     st.header("Period vs the number of new artists being hosted on the channel")
-     st.plotly_chart(fig, use_container_width=True)
-
-with col6:
-     st.header("Data Period and New Artists")
-     st.dataframe(processed_data)
-
-
-col5, col6 = st.columns(2)
-
-with col5:
-     st.header("Period vs user interaction (likes and comments)")
-     st.line_chart(chart_data)
-
-with col6:
-     st.header("Data Period and Interaction")
-     st.dataframe(processed_data)
