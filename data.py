@@ -1,9 +1,5 @@
-import streamlit as st
 import pandas as pd
-import numpy as np
-from datetime import date, datetime
-import plotly.express as px
-# from .data import data_dic
+
 # Functions 
 
 def unique_value(df):
@@ -56,49 +52,3 @@ data_dic = {"2012": df_2012[columuns], "2013": df_2013[columuns], "2014": df_201
             "2015": df_2015[columuns], "2016": df_2016[columuns], "2017": df_2017[columuns],
             "2018": df_2018[columuns], "2019": df_2019[columuns], "2020": df_2020[columuns],  
             "2021": df_2021[columuns], "2022": df_2022[columuns],}
-
-# Ploty figers to be served
-fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
-# fig.write_html('first_figure.html', auto_open=True)
-
-## UI 
-
-c1 = st.container()
-c1.title('Ethiopian Music on Youtube')
-c1.subheader("""
-In this section, 
-Ethiopian musics hosted by different channels, mostly 
-proffessional recording lables and online streaming channels, are used to build artists information, 
-mainly artist's name, total views(on YouTube) and their debut data will be collected. From this we will 
-build artists full information from other platforms""")
-
-col1, col2 = c1.columns(2)
-with col1:
-     c2 = st.container()
-     c2.header("Artists hosted per year")
-     year = c2.selectbox('Which Years data do you want to review',
-                         ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='artist')
-     c2.subheader("For Year: {1}, Total Count of Posts: {0} Unique Artist Count {2}".format(len(data_dic[year].values), year, len(unique_value(data_dic[year])['Artists'].values)))
-     c2.dataframe(unique_value(data_dic[year]))
-with col2:
-     
-     channels_fig = px.pie(data_dic[year], values='Views', names='Channel', title='Total Number of posts catagorized by the channel that hosted the Videos')
-     st.plotly_chart(channels_fig, use_container_width=False)
-
-container = st.container()
-container.header("Period vs the number of views per channel")
-option = container.selectbox('Which Years data do you want to review',
-                     ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='channel')
-col3, col4 = container.columns(2)
-
-
-posted_date = data_dic[option] 
-# posted_date = posted_date.rename(columns={'Post Date':'index'}).set_index('index')
-with col3:
-     # container.line_chart(posted_date)
-     per = px.line(posted_date, x="Post Date", y="Views", color="Channel")
-     container.plotly_chart(per, use_container_width=True)
-     
-with col4:
-     with container.expander("See Data"):
-          st.dataframe(data_dic[option])
