@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from datetime import date, datetime
 import plotly.express as px
+import plotly.graph_objects as go
 # from .data import data_dic
 # Functions 
 
@@ -81,12 +82,12 @@ with col1:
      c2.subheader("For Year: {1}, Total Count of Posts: {0} Unique Artist Count {2}".format(len(data_dic[year].values), year, len(unique_value(data_dic[year])['Artists'].values)))
      c2.dataframe(unique_value(data_dic[year]))
 with col2:
-     
+
      channels_fig = px.pie(data_dic[year], values='Views', names='Channel', title='Total Number of posts catagorized by the channel that hosted the Videos')
      st.plotly_chart(channels_fig, use_container_width=False)
 
 container = st.container()
-container.header("Period vs the number of views per channel")
+container.header("Total Number of Views since Date of Posting")
 option = container.selectbox('Which Years data do you want to review',
                      ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='channel')
 col3, col4 = container.columns(2)
@@ -96,8 +97,12 @@ posted_date = data_dic[option]
 # posted_date = posted_date.rename(columns={'Post Date':'index'}).set_index('index')
 with col3:
      # container.line_chart(posted_date)
+     fig = go.Figure(go.Bar(
+            x=data_dic[option]['Views'].values,
+            y=data_dic[option]['Artist'].values,
+            orientation='h'))
      per = px.line(posted_date, x="Post Date", y="Views", color="Channel")
-     container.plotly_chart(per, use_container_width=True)
+     container.plotly_chart(fig, use_container_width=True)
      
 with col4:
      with container.expander("See Data"):
