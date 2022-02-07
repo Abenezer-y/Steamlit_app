@@ -48,3 +48,5 @@ def create_yt_post(yt_post: schemas.YoutubeCreate, db: Session = Depends(get_db)
 def read_yt_posts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     yt_posts = crud.get_yt_posts(db, skip=skip, limit=limit)
     return yt_posts
+
+ 

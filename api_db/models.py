@@ -34,8 +34,15 @@ class Youtube(Base):
     link = Column(String)
     collection_date = Column(Date, index=True, default=date.today())
 
-    # comments = relationship("Comment", back_populates="yt_posts")
+    musics = relationship("Music", back_populates="youtube_post")
    
+class Music(Base):
+    __tablename__ = "music"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    youtube_post = relationship('Youtube', back_populates='musics')
+
 
 # class Comment(Base):
 #     __tablename__ = "comments"

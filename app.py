@@ -44,6 +44,7 @@ df_2022 = processed_data.loc[((processed_data['Post Date']>=datetime(2022, 1, 1)
 # df_2013.style
 # df_2013.style.format("{:,.0f}")
 # df_2013.style.hide_index()
+# processed_data.loc[:, "Views"] = processed_data["Views"].map('{:,d}'.format)
 view_counts = {"Post Date": ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'], 
                "Views": [df_2012['Views'].sum(), df_2013['Views'].sum(), df_2014['Views'].sum(), df_2015['Views'].sum(), df_2016['Views'].sum(), 
                          df_2017['Views'].sum(), df_2018['Views'].sum(), df_2019['Views'].sum(), df_2020['Views'].sum(), df_2021['Views'].sum(),
@@ -53,14 +54,10 @@ all_df = pd.DataFrame(view_counts)
 # "All": all_df, 
 columuns = ["Post Date", 'Channel', 'Artist', 'Title', 'Duration', 'Views', 'Likes']
 # Dictionary of dataframes to be served 
-data_dic = {"2012": df_2012[columuns], "2013": df_2013[columuns], "2014": df_2014[columuns], 
+data_dic = {"All": processed_data[columuns],"2012": df_2012[columuns], "2013": df_2013[columuns], "2014": df_2014[columuns], 
             "2015": df_2015[columuns], "2016": df_2016[columuns], "2017": df_2017[columuns],
             "2018": df_2018[columuns], "2019": df_2019[columuns], "2020": df_2020[columuns],  
             "2021": df_2021[columuns], "2022": df_2022[columuns],}
-
-# Ploty figers to be served
-fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
-# fig.write_html('first_figure.html', auto_open=True)
 
 ## UI 
 
@@ -78,7 +75,7 @@ with col1:
      c2 = st.container()
      c2.header("Artists hosted per year")
      year = c2.selectbox('Which Years data do you want to review',
-                         ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='artist')
+                         ('All', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='artist')
      c2.subheader("For Year: {1}, Total Count of Posts: {0} Unique Artist Count {2}".format(len(data_dic[year].values), year, len(unique_value(data_dic[year])['Artists'].values)))
      c2.dataframe(unique_value(data_dic[year]))
 with col2:
@@ -89,7 +86,7 @@ with col2:
 container = st.container()
 container.header("Total Number of Views since Date of Posting")
 option = container.selectbox('Which Years data do you want to review',
-                     ('2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='channel')
+                     ('All', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'), key='channel')
 col3, col4 = container.columns(2)
 
 
